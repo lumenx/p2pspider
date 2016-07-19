@@ -17,15 +17,25 @@ p2p.ignore(function (infohash, rinfo, callback) {
 
 p2p.on('metadata', function (metadata) {
     console.log(metadata);
-    /*models.Magnet.create({
-        hash: 'dslkfjdslfsd',
-        name: 'djflds',
-        files: 'sdfdsfds',
-        size: 33243
+    
+    metadata.infohash;
+    metadata.magnet;
+    metadata.port;
+    metadata.address;
+    metadata.pieces;
+    metadata['piece length'];
+    //array
+    metadata.info.files;
+    metadata.info.name;
+    models.Magnet.create({
+        hash: metadata.infohash,
+        name: metadata.info.name.toString(),
+        files: '',
+        size: metadata['piece length']
     })
     .then(function(magnet) {
-        console.log('fetched a magnet:%s', metadata.info.name.toString());
-    });*/
+        console.log('fetched a magnet:%s', magnet.name);
+    });
 });
 
 models.sequelize.sync().then(function () {
