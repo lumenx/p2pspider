@@ -16,25 +16,48 @@ p2p.ignore(function (infohash, rinfo, callback) {
 });
 
 p2p.on('metadata', function (metadata) {
-    console.log(metadata);
+    //console.log(metadata);
     
     metadata.infohash;
     metadata.magnet;
     metadata.port;
     metadata.address;
-    metadata.pieces;
-    metadata['piece length'];
+    
+    
     //array
     metadata.info.files;
     metadata.info.name;
-    models.Magnet.create({
-        hash: metadata.infohash,
-        name: metadata.info.name.toString(),
-        files: '',
-        size: metadata['piece length']
+    metadata.info['piece length'];
+    metadata.info.pieces;
+
+    var files = [];
+    
+    if (metadata.info.files) {
+        metadata.info.files.forEach(function(file) {
+            file.path.forEach(function(path) {
+                files.push(path.toString());
+            });
+        });
+    }
+
+    models.Magnet.findOne({where: {hash: metadata.infohash}})
+    .then(function(magnet) {
+        if (magnet) {
+            return magnet.increment('node_count', {by: 1});
+        }
+        return models.Magnet.create({
+            hash: metadata.infohash,
+            name: metadata.info.name.toString(),
+            files: JSON.stringify(files),
+            size: metadata.info['piece length'],
+            node_count: 1
+        });
     })
     .then(function(magnet) {
         console.log('fetched a magnet:%s', magnet.name);
+    })
+    .catch(function(error) {
+        console.log(error);
     });
 });
 
