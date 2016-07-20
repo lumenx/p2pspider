@@ -31,14 +31,24 @@ p2p.on('metadata', function (metadata) {
     metadata.info.pieces;
 
     var files = [];
+
+    var totalSize = 0;
     
     if (metadata.info.files) {
         metadata.info.files.forEach(function(file) {
             file.path.forEach(function(path) {
                 files.push(path.toString());
             });
+            //console.log('MULTI Filename: %s', file.path.toString());
+            //console.log('MULTI Length: %s', file.length.toString());
+            totalSize = totalSize + file.length;
         });
+    }else {
+       //console.log('SINGLE Filename: %s', metadata.info.name.toString());
+       //console.log('SINGLE Length: %s', metadata.info.length.toString());
+       totalSize = totalSize + metadata.info.length;
     }
+                
 
     models.Magnet.findOne({where: {hash: metadata.infohash}})
     .then(function(magnet) {
@@ -49,7 +59,8 @@ p2p.on('metadata', function (metadata) {
             hash: metadata.infohash,
             name: metadata.info.name.toString(),
             files: JSON.stringify(files),
-            size: metadata.info['piece length'],
+            //size: metadata.info['piece length'],
+            size: totalSize,
             node_count: 1
         });
     })

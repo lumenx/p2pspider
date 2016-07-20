@@ -5,7 +5,7 @@ module.exports = function(sequelize, DataTypes) {
     hash: DataTypes.STRING,
     name: DataTypes.STRING(1000),
     files: DataTypes.TEXT,
-    size: DataTypes.INTEGER,
+    size: DataTypes.BIGINT,
     node_count: DataTypes.INTEGER
   }, {
     indexs: [
