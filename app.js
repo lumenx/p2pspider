@@ -34,6 +34,7 @@ p2p.on('metadata', function (metadata) {
 
     var totalSize = 0;
     
+    try {
     if (metadata.info.files) {
         metadata.info.files.forEach(function(file) {
             file.path.forEach(function(path) {
@@ -48,7 +49,10 @@ p2p.on('metadata', function (metadata) {
        //console.log('SINGLE Length: %s', metadata.info.length.toString());
        totalSize = totalSize + metadata.info.length;
     }
-                
+    }
+    catch(err){
+       console.log(err);
+    }                
 
     models.Magnet.findOne({where: {hash: metadata.infohash}})
     .then(function(magnet) {
