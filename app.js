@@ -4,8 +4,8 @@ var P2PSpider = require('./lib');
 var models = require('./models');
 
 var p2p = P2PSpider({
-    nodesMaxSize: 200,   // be careful
-    maxConnections: 400, // be careful
+    nodesMaxSize: 100,   // be careful
+    maxConnections: 200, // be careful
     timeout: 5000
 });
 
@@ -16,7 +16,6 @@ p2p.ignore(function (infohash, rinfo, callback) {
 });
 
 p2p.on('metadata', function (metadata) {
-    //console.log(metadata);
     
     metadata.infohash;
     metadata.magnet;
@@ -40,13 +39,9 @@ p2p.on('metadata', function (metadata) {
             file.path.forEach(function(path) {
                 files.push(path.toString());
             });
-            //console.log('MULTI Filename: %s', file.path.toString());
-            //console.log('MULTI Length: %s', file.length.toString());
             totalSize = totalSize + file.length;
         });
     }else {
-       //console.log('SINGLE Filename: %s', metadata.info.name.toString());
-       //console.log('SINGLE Length: %s', metadata.info.length.toString());
        totalSize = totalSize + metadata.info.length;
     }
     }
@@ -54,22 +49,22 @@ p2p.on('metadata', function (metadata) {
        console.log(err);
     }                
 
+    //Make sure you add the UNIQUE INDEX to the 'hash' column
+    //This will keep laggy MySQL from allowing duplicate HashID's from multiple crawlers
     models.Magnet.findOne({where: {hash: metadata.infohash}})
     .then(function(magnet) {
         if (magnet) {
+            console.log('OLD - %s - %s', metadata.infohash, magnet.name);
             return magnet.increment('node_count', {by: 1});
         }
+        console.log('NEW - %s - %s', metadata.infohash, metadata.info.name.toString());
         return models.Magnet.create({
             hash: metadata.infohash,
             name: metadata.info.name.toString(),
             files: JSON.stringify(files),
-            //size: metadata.info['piece length'],
             size: totalSize,
             node_count: 1
         });
-    })
-    .then(function(magnet) {
-        console.log('fetched a magnet:%s', magnet.name);
     })
     .catch(function(error) {
         console.log(error);
