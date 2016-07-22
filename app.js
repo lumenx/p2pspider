@@ -51,6 +51,9 @@ p2p.on('metadata', function (metadata) {
 
     //Make sure you add the UNIQUE INDEX to the 'hash' column
     //This will keep laggy MySQL from allowing duplicate HashID's from multiple crawlers
+
+    //ALTER IGNORE TABLE `Magnets` ADD UNIQUE INDEX (`hash`);
+
     models.Magnet.findOne({where: {hash: metadata.infohash}})
     .then(function(magnet) {
         if (magnet) {
