@@ -3,7 +3,13 @@
 var elasticsearch = require('elasticsearch');
 var moment = require('moment');
 var P2PSpider = require('./lib');
-//var models = require('./models');
+
+var index = 'test2';
+var type = 'seed';
+
+//Be careful here... Will easily overload your system!
+var myMaxNodes = 100; //100
+var myMaxConnections = 200; //200
 
 var es = new elasticsearch.Client({
     host: 'home.redsox.cc:9383',
@@ -11,8 +17,8 @@ var es = new elasticsearch.Client({
 });
 
 var p2p = P2PSpider({
-    nodesMaxSize: 100,   // be careful
-    maxConnections: 200, // be careful
+    nodesMaxSize: myMaxNodes,
+    maxConnections: myMaxConnections,
     timeout: 5000
 });
 
@@ -38,7 +44,7 @@ p2p.ignore(function (infohash, rinfo, callback) {
     })*/
     .then(function(res) {
         //console.log('infohash exist:%s', infohash);
-        console.log('OLD - %s', infohash);
+        //console.log('OLD - %s', infohash);
     })
     .catch(function(err, res) {
         if (err.status && err.status == 404) {
@@ -50,9 +56,6 @@ p2p.ignore(function (infohash, rinfo, callback) {
     });
 
 });
-
-var index = 'test2';
-var type = 'seed';
 
 p2p.on('metadata', function (metadata) {
 
@@ -91,7 +94,7 @@ p2p.on('metadata', function (metadata) {
           console.log('NEW - %s - %s', metadata.infohash, metadata.info.name.toString());
        })
        .catch(function(err) {
-           console.log(err);
+          console.log(err);
        });
     }
     catch(err){
