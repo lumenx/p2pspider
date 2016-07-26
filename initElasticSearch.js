@@ -1,3 +1,8 @@
+//You will need the "IK Analysis Plugin" plugin for elasticsearch before running this init program.
+//More info at https://www.elastic.co/guide/en/elasticsearch/plugins/2.3/analysis.html
+
+//"IK Analysis Plugin" at https://github.com/medcl/elasticsearch-analysis-ik
+
 var elasticsearch = require('elasticsearch');
 
 var es = new elasticsearch.Client({
