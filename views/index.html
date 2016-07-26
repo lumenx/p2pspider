@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <style>
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search result(<%= querySet.hits.total %>)</h1>
+    <% querySet.hits.hits.forEach(function(torrent) { %>
+        <p><strong>hash:</strong>magnet:?xt=urn:btih:<%= torrent._id %></p>
+        <p><strong>name:</strong><%- torrent.highlight ? torrent.highlight.name : torrent._source.name %></p>
+        <p><strong>peer_counter:</strong><%= torrent._source.peer_counter%></p>
+        <hr>
+    <% }); %>
+</body>
+</html>
