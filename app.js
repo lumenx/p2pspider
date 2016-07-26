@@ -38,7 +38,7 @@ p2p.ignore(function (infohash, rinfo, callback) {
     })*/
     .then(function(res) {
         //console.log('infohash exist:%s', infohash);
-        console.log('OLD - %s, infohash);
+        console.log('OLD - %s', infohash);
     })
     .catch(function(err, res) {
         if (err.status && err.status == 404) {
@@ -88,7 +88,7 @@ p2p.on('metadata', function (metadata) {
            }
        })
        .then(function(res) {
-          console.log('NEW - %s - $s', metadata.infohash, metadata.info.name.toString());
+          console.log('NEW - %s - %s', metadata.infohash, metadata.info.name.toString());
        })
        .catch(function(err) {
            console.log(err);
