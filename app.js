@@ -8,8 +8,8 @@ var index = 'test2';
 var type = 'seed';
 
 //Be careful here... Will easily overload your system!
-var myMaxNodes = 100; //100
-var myMaxConnections = 200; //200
+var myMaxNodes = 200; //200
+var myMaxConnections = 400; //400
 
 var es = new elasticsearch.Client({
     host: 'home.redsox.cc:9383',
@@ -22,6 +22,7 @@ var p2p = P2PSpider({
     timeout: 5000
 });
 
+/*
 p2p.ignore(function (infohash, rinfo, callback) {
 
     es.get({
@@ -29,7 +30,7 @@ p2p.ignore(function (infohash, rinfo, callback) {
         type: type,
         id: infohash
     })
-    /*.then(function(res) {
+    ////.then(function(res) {
         return es.update({
             index: index,
             type: type,
@@ -41,7 +42,7 @@ p2p.ignore(function (infohash, rinfo, callback) {
                 }
             }
         });
-    })*/
+    })////
     .then(function(res) {
         //console.log('infohash exist:%s', infohash);
         //console.log('OLD - %s', infohash);
@@ -56,6 +57,7 @@ p2p.ignore(function (infohash, rinfo, callback) {
     });
 
 });
+*/
 
 p2p.on('metadata', function (metadata) {
 
@@ -94,11 +96,11 @@ p2p.on('metadata', function (metadata) {
           console.log('NEW - %s - %s', metadata.infohash, metadata.info.name.toString());
        })
        .catch(function(err) {
-          console.log(err);
+          //console.log(err);
        });
     }
     catch(err){
-       console.log(err);
+       //console.log(err);
     }
     
 });
