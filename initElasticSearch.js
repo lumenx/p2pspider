@@ -6,11 +6,11 @@
 var elasticsearch = require('elasticsearch');
 
 var es = new elasticsearch.Client({
-    host: 'home.redsox.cc:9383',
+    host: 'HOSTNAME:PORT',
     log: 'info'
 });
 
-var index = 'test';
+var index = 'INDEX_NAME';
 var type = 'seed';
 
 es.indices.create({

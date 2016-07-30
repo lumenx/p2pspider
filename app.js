@@ -4,25 +4,31 @@ var elasticsearch = require('elasticsearch');
 var moment = require('moment');
 var P2PSpider = require('./lib');
 
-var index = 'test2';
+var index = 'INDEX_NAME';
 var type = 'seed';
 
 //Be careful here... Will easily overload your system!
-var myMaxNodes = 200; //200
-var myMaxConnections = 400; //400
+var myMaxNodes = 200; //200 is the default initial, play with it to find your happy place!
+var myMaxConnections = 400; //400 is the default initial, play with it to find your happy place!
 
 var es = new elasticsearch.Client({
-    host: 'home.redsox.cc:9383',
+    host: 'HOSTNAME:PORT',
     log: 'info'
 });
 
 var p2p = P2PSpider({
     nodesMaxSize: myMaxNodes,
     maxConnections: myMaxConnections,
-    timeout: 5000
+    timeout: 5000 //If you have a very fast network, take down to 1000 and increment by 1000 until you get a steady stream of data coming in!
 });
 
-/*
+//Use the following elasticsearch configuration values in order to run the updating script!
+//Add to the elasticsearch.yml
+//
+//script.inline: on
+//script.indexed: on
+//script.engine.groovy.inline.aggs: on
+//script.engine.groovy.inline.update: on
 p2p.ignore(function (infohash, rinfo, callback) {
 
     es.get({
@@ -30,7 +36,7 @@ p2p.ignore(function (infohash, rinfo, callback) {
         type: type,
         id: infohash
     })
-    ////.then(function(res) {
+    .then(function(res) {
         return es.update({
             index: index,
             type: type,
@@ -42,28 +48,24 @@ p2p.ignore(function (infohash, rinfo, callback) {
                 }
             }
         });
-    })////
+    })
     .then(function(res) {
-        //console.log('infohash exist:%s', infohash);
-        //console.log('OLD - %s', infohash);
+       console.log('Peer Count Increased - %s', infohash);
+       //callback(true);
     })
     .catch(function(err, res) {
         if (err.status && err.status == 404) {
+            console.log(res);
             callback(false);
         } else {
             console.err(err);
-            process.exit(1);
+            //process.exit(1);
         }
     });
 
 });
-*/
 
 p2p.on('metadata', function (metadata) {
-
-    //console.log('=======================================');
-    //console.log('hash:%s', metadata.infohash);
-    //console.log('name:%s', metadata.info.name.toString());
 
     var files = [];
     var totalLength = 0;
