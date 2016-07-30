@@ -50,12 +50,11 @@ p2p.ignore(function (infohash, rinfo, callback) {
         });
     })
     .then(function(res) {
-       console.log('Peer Count Increased - %s', infohash);
-       //callback(true);
+       //console.log('Peer Count Increased - %s', infohash);
+       callback(true);
     })
     .catch(function(err, res) {
         if (err.status && err.status == 404) {
-            console.log(res);
             callback(false);
         } else {
             console.err(err);
